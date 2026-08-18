@@ -1,0 +1,73 @@
+// Prisma schema for the Sign<->Voice communication platform
+// Run `npx prisma migrate dev --name init` after setting DATABASE_URL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  phone        String?
+  bio          String?
+  avatarUrl    String?
+  preferredLang String  @default("ISL") // ISL, ASL, BSL, etc.
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  sentRequests     ContactRequest[] @relation("SentRequests")
+  receivedRequests ContactRequest[] @relation("ReceivedRequests")
+
+  contactsA Contact[] @relation("ContactA")
+  contactsB Contact[] @relation("ContactB")
+
+  callsAsCaller CallSession[] @relation("Caller")
+  callsAsCallee CallSession[] @relation("Callee")
+}
+
+// Friend request flow: pending -> accepted/declined
+model ContactRequest {
+  id          String   @id @default(uuid())
+  fromUser    User     @relation("SentRequests", fields: [fromUserId], references: [id])
+  fromUserId  String
+  toUser      User     @relation("ReceivedRequests", fields: [toUserId], references: [id])
+  toUserId    String
+  status      String   @default("pending") // pending | accepted | declined
+  createdAt   DateTime @default(now())
+
+  @@unique([fromUserId, toUserId])
+}
+
+// Once accepted, a symmetric Contact (friend) record is created
+model Contact {
+  id        String   @id @default(uuid())
+  userA     User     @relation("ContactA", fields: [userAId], references: [id])
+  userAId   String
+  userB     User     @relation("ContactB", fields: [userBId], references: [id])
+  userBId   String
+  createdAt DateTime @default(now())
+
+  @@unique([userAId, userBId])
+}
+
+// A translation/video call session between two users
+model CallSession {
+  id          String   @id @default(uuid())
+  caller      User     @relation("Caller", fields: [callerId], references: [id])
+  callerId    String
+  callee      User     @relation("Callee", fields: [calleeId], references: [id])
+  calleeId    String
+  mode        String   // "sign-to-sign" | "sign-to-voice" | "voice-to-sign"
+  sourceLang  String   // ISL | ASL | BSL | ... (sign) or spoken lang code (voice)
+  targetLang  String
+  startedAt   DateTime @default(now())
+  endedAt     DateTime?
+  status      String   @default("active") // active | ended | missed
+}
