@@ -18,6 +18,7 @@ export default function Navbar() {
       <div className="flex items-center gap-6 text-sm">
         <Link to="/dashboard" className="hover:text-teal-300">Dashboard</Link>
         <Link to="/contacts" className="hover:text-teal-300">Contacts</Link>
+        <Link to="/history" className="hover:text-teal-300">History</Link>
         <Link to="/profile" className="hover:text-teal-300">Profile</Link>
         <span className="text-slate-400">{user?.name}</span>
         <button

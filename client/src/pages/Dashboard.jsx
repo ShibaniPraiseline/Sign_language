@@ -38,6 +38,17 @@ export default function Dashboard() {
               Update your phone number, bio, and preferred sign language.
             </p>
           </Link>
+
+          <Link
+            to="/history"
+            className="block bg-white p-6 rounded-lg border border-slate-200 hover:border-teal-400"
+          >
+            <div className="text-2xl mb-2">🕓</div>
+            <h2 className="font-semibold text-slate-900">Call History</h2>
+            <p className="text-sm text-slate-500 mt-1">
+              See your past translation and video calls.
+            </p>
+          </Link>
         </div>
       </main>
     </div>

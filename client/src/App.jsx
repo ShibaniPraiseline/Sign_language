@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Contacts from "./pages/Contacts";
 import Translate from "./pages/Translate";
+import CallHistory from "./pages/CallHistory";
 
 export default function App() {
   return (
@@ -52,6 +53,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Translate />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/history"
+            element={
+              <ProtectedRoute>
+                <CallHistory />
               </ProtectedRoute>
             }
           />

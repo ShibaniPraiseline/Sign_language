@@ -27,6 +27,8 @@ export default function Translate() {
   const [status, setStatus] = useState("Not connected");
   const [translatedText, setTranslatedText] = useState("");
   const [error, setError] = useState("");
+  const [micOn, setMicOn] = useState(true);
+  const [cameraOn, setCameraOn] = useState(true);
 
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
@@ -72,6 +74,8 @@ export default function Translate() {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     localStreamRef.current = stream;
     if (localVideoRef.current) localVideoRef.current.srcObject = stream;
+    setMicOn(true);
+    setCameraOn(true);
 
     const pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
     pcRef.current = pc;
@@ -196,6 +200,24 @@ export default function Translate() {
     }
   }
 
+  function toggleMic() {
+    const stream = localStreamRef.current;
+    if (!stream) return;
+    const audioTrack = stream.getAudioTracks()[0];
+    if (!audioTrack) return;
+    audioTrack.enabled = !audioTrack.enabled;
+    setMicOn(audioTrack.enabled);
+  }
+
+  function toggleCamera() {
+    const stream = localStreamRef.current;
+    if (!stream) return;
+    const videoTrack = stream.getVideoTracks()[0];
+    if (!videoTrack) return;
+    videoTrack.enabled = !videoTrack.enabled;
+    setCameraOn(videoTrack.enabled);
+  }
+
   function cleanupMedia() {
     if (localStreamRef.current) {
       localStreamRef.current.getTracks().forEach((t) => t.stop());
@@ -209,8 +231,9 @@ export default function Translate() {
   }
 
   function endCall() {
-    if (roomIdRef.current && socket) {
-      socket.emit("leave-room", { roomId: roomIdRef.current });
+    if (roomIdRef.current) {
+      if (socket) socket.emit("leave-room", { roomId: roomIdRef.current });
+      api.post(`/calls/${roomIdRef.current}/end`).catch(() => {});
     }
     cleanupMedia();
     setInCall(false);
@@ -320,6 +343,28 @@ export default function Translate() {
             <span className="absolute bottom-2 left-2 text-xs bg-black/60 text-white px-2 py-1 rounded">
               You
             </span>
+            {inCall && (
+              <div className="absolute bottom-2 right-2 flex gap-2">
+                <button
+                  onClick={toggleMic}
+                  title={micOn ? "Mute microphone" : "Unmute microphone"}
+                  className={`w-9 h-9 rounded-full flex items-center justify-center text-white text-sm ${
+                    micOn ? "bg-slate-700/80 hover:bg-slate-600" : "bg-red-600 hover:bg-red-700"
+                  }`}
+                >
+                  {micOn ? "🎤" : "🔇"}
+                </button>
+                <button
+                  onClick={toggleCamera}
+                  title={cameraOn ? "Turn camera off" : "Turn camera on"}
+                  className={`w-9 h-9 rounded-full flex items-center justify-center text-white text-sm ${
+                    cameraOn ? "bg-slate-700/80 hover:bg-slate-600" : "bg-red-600 hover:bg-red-700"
+                  }`}
+                >
+                  {cameraOn ? "📹" : "🚫"}
+                </button>
+              </div>
+            )}
           </div>
           <div className="bg-black rounded-lg overflow-hidden aspect-video relative">
             <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-full object-cover" />
