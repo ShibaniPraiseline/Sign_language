@@ -133,7 +133,10 @@ export default function Translate() {
   }
 
   function handlePeerLeft() {
-    setStatus("The other person left the call");
+    setStatus("The other person ended the call");
+    cleanupMedia();
+    setInCall(false);
+    roomIdRef.current = null;
   }
 
   // Caller flow: create a new CallSession, then invite the callee
@@ -264,7 +267,7 @@ export default function Translate() {
           <div className="mb-4 text-sm text-bad bg-red-50 px-3 py-2 rounded-md">{error}</div>
         )}
 
-        <div className="card p-5 mb-6 flex flex-wrap gap-6 items-end">
+        <div className="card p-5 mb-6 flex flex-col sm:flex-row flex-wrap gap-4 sm:gap-6 sm:items-end">
           <div>
             <label className="field-label">Mode</label>
             <select
@@ -328,15 +331,15 @@ export default function Translate() {
             </div>
           )}
 
-          <div className="ml-auto">
+          <div className="sm:ml-auto">
             {!inCall ? (
-              <button onClick={startCall} disabled={isIncoming} className="btn-primary">
+              <button onClick={startCall} disabled={isIncoming} className="btn-primary w-full sm:w-auto">
                 Start call
               </button>
             ) : (
               <button
                 onClick={endCall}
-                className="rounded-md bg-bad text-white font-medium px-5 py-2.5 hover:bg-red-700 transition-colors"
+                className="w-full sm:w-auto rounded-md bg-bad text-white font-medium px-5 py-2.5 hover:bg-red-700 transition-colors"
               >
                 End call
               </button>
