@@ -241,24 +241,37 @@ export default function Translate() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-paper">
       <Navbar />
-      <main className="max-w-4xl mx-auto px-6 py-8">
-        <h1 className="text-2xl font-bold text-slate-900 mb-1">Live Translation</h1>
-        <p className="text-sm text-slate-500 mb-6">Status: {status}</p>
+      <main className="max-w-4xl mx-auto px-6 py-10">
+        <p className="font-mono text-xs text-ink-soft uppercase tracking-wider mb-2">Live session</p>
+        <div className="flex items-center gap-2 mb-6">
+          <h1 className="font-display text-3xl">Translation</h1>
+          <span
+            className={`text-xs font-mono px-2 py-1 rounded-full ${
+              status === "Connected"
+                ? "bg-green-50 text-good"
+                : status === "Call declined"
+                ? "bg-red-50 text-bad"
+                : "bg-cobalt-soft text-cobalt-deep"
+            }`}
+          >
+            {status}
+          </span>
+        </div>
 
         {error && (
-          <div className="mb-4 text-sm text-red-600 bg-red-50 px-3 py-2 rounded">{error}</div>
+          <div className="mb-4 text-sm text-bad bg-red-50 px-3 py-2 rounded-md">{error}</div>
         )}
 
-        <div className="bg-white p-5 rounded-lg border border-slate-200 mb-6 flex flex-wrap gap-6 items-end">
+        <div className="card p-5 mb-6 flex flex-wrap gap-6 items-end">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Mode</label>
+            <label className="field-label">Mode</label>
             <select
               value={mode}
               onChange={(e) => setMode(e.target.value)}
               disabled={inCall}
-              className="px-3 py-2 border border-slate-300 rounded-md"
+              className="field-input"
             >
               <option value="sign-to-sign">Sign → Sign</option>
               <option value="sign-to-voice">Sign → Voice</option>
@@ -269,12 +282,12 @@ export default function Translate() {
           {mode === "sign-to-sign" ? (
             <>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">From</label>
+                <label className="field-label">From</label>
                 <select
                   value={sourceLang}
                   onChange={(e) => setSourceLang(e.target.value)}
                   disabled={inCall}
-                  className="px-3 py-2 border border-slate-300 rounded-md"
+                  className="field-input"
                 >
                   {SIGN_LANGS.map((l) => (
                     <option key={l} value={l}>{l}</option>
@@ -282,12 +295,12 @@ export default function Translate() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">To</label>
+                <label className="field-label">To</label>
                 <select
                   value={targetLang}
                   onChange={(e) => setTargetLang(e.target.value)}
                   disabled={inCall}
-                  className="px-3 py-2 border border-slate-300 rounded-md"
+                  className="field-input"
                 >
                   {SIGN_LANGS.map((l) => (
                     <option key={l} value={l}>{l}</option>
@@ -297,9 +310,7 @@ export default function Translate() {
             </>
           ) : (
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Sign language
-              </label>
+              <label className="field-label">Sign language</label>
               <select
                 value={mode === "sign-to-voice" ? sourceLang : targetLang}
                 onChange={(e) =>
@@ -308,7 +319,7 @@ export default function Translate() {
                     : setTargetLang(e.target.value)
                 }
                 disabled={inCall}
-                className="px-3 py-2 border border-slate-300 rounded-md"
+                className="field-input"
               >
                 {SIGN_LANGS.map((l) => (
                   <option key={l} value={l}>{l}</option>
@@ -319,17 +330,13 @@ export default function Translate() {
 
           <div className="ml-auto">
             {!inCall ? (
-              <button
-                onClick={startCall}
-                disabled={isIncoming}
-                className="px-5 py-2 bg-teal-600 text-white rounded-md font-medium hover:bg-teal-700 disabled:opacity-50"
-              >
+              <button onClick={startCall} disabled={isIncoming} className="btn-primary">
                 Start call
               </button>
             ) : (
               <button
                 onClick={endCall}
-                className="px-5 py-2 bg-red-600 text-white rounded-md font-medium hover:bg-red-700"
+                className="rounded-md bg-bad text-white font-medium px-5 py-2.5 hover:bg-red-700 transition-colors"
               >
                 End call
               </button>
@@ -338,9 +345,9 @@ export default function Translate() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
-          <div className="bg-black rounded-lg overflow-hidden aspect-video relative">
+          <div className="bg-ink rounded-xl overflow-hidden aspect-video relative">
             <video ref={localVideoRef} autoPlay muted playsInline className="w-full h-full object-cover" />
-            <span className="absolute bottom-2 left-2 text-xs bg-black/60 text-white px-2 py-1 rounded">
+            <span className="absolute bottom-2 left-2 text-xs bg-black/60 text-paper px-2 py-1 rounded font-mono">
               You
             </span>
             {inCall && (
@@ -348,8 +355,8 @@ export default function Translate() {
                 <button
                   onClick={toggleMic}
                   title={micOn ? "Mute microphone" : "Unmute microphone"}
-                  className={`w-9 h-9 rounded-full flex items-center justify-center text-white text-sm ${
-                    micOn ? "bg-slate-700/80 hover:bg-slate-600" : "bg-red-600 hover:bg-red-700"
+                  className={`w-9 h-9 rounded-full flex items-center justify-center text-white text-sm transition-colors ${
+                    micOn ? "bg-white/15 hover:bg-white/25" : "bg-bad hover:bg-red-700"
                   }`}
                 >
                   {micOn ? "🎤" : "🔇"}
@@ -357,8 +364,8 @@ export default function Translate() {
                 <button
                   onClick={toggleCamera}
                   title={cameraOn ? "Turn camera off" : "Turn camera on"}
-                  className={`w-9 h-9 rounded-full flex items-center justify-center text-white text-sm ${
-                    cameraOn ? "bg-slate-700/80 hover:bg-slate-600" : "bg-red-600 hover:bg-red-700"
+                  className={`w-9 h-9 rounded-full flex items-center justify-center text-white text-sm transition-colors ${
+                    cameraOn ? "bg-white/15 hover:bg-white/25" : "bg-bad hover:bg-red-700"
                   }`}
                 >
                   {cameraOn ? "📹" : "🚫"}
@@ -366,19 +373,21 @@ export default function Translate() {
               </div>
             )}
           </div>
-          <div className="bg-black rounded-lg overflow-hidden aspect-video relative">
+          <div className="bg-ink rounded-xl overflow-hidden aspect-video relative">
             <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-full object-cover" />
-            <span className="absolute bottom-2 left-2 text-xs bg-black/60 text-white px-2 py-1 rounded">
+            <span className="absolute bottom-2 left-2 text-xs bg-black/60 text-paper px-2 py-1 rounded font-mono">
               Contact
             </span>
           </div>
         </div>
 
-        <div className="mt-6 bg-white p-5 rounded-lg border border-slate-200">
-          <h2 className="text-sm font-semibold text-slate-700 mb-2">Translation output</h2>
-          <p className="text-slate-900 min-h-[2rem]">
+        <div className="mt-6 card p-5">
+          <h2 className="font-mono text-xs uppercase tracking-wider text-ink-soft mb-2">
+            Translation output
+          </h2>
+          <p className="text-ink text-lg min-h-[2rem]">
             {translatedText || (
-              <span className="text-slate-400">
+              <span className="text-ink-soft italic">
                 Recognized text will appear here once the gesture-recognition model is connected.
               </span>
             )}

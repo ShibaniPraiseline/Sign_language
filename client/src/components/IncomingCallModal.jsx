@@ -22,24 +22,18 @@ export default function IncomingCallModal() {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm text-center">
-        <div className="text-3xl mb-2">📞</div>
-        <h2 className="text-lg font-semibold text-slate-900">
-          {fromUser.name} is calling
-        </h2>
-        <p className="text-sm text-slate-500 mt-1">Mode: {mode}</p>
+    <div className="fixed inset-0 bg-ink/60 flex items-center justify-center z-50 px-6">
+      <div className="card p-7 w-full max-w-sm text-center">
+        <div className="w-14 h-14 rounded-full bg-cobalt-soft text-cobalt flex items-center justify-center text-2xl mx-auto mb-4 animate-pulse">
+          📞
+        </div>
+        <h2 className="font-display text-xl">{fromUser.name} is calling</h2>
+        <p className="text-sm text-ink-soft font-mono mt-1">{mode}</p>
         <div className="mt-6 flex gap-3">
-          <button
-            onClick={decline}
-            className="flex-1 py-2 border border-slate-300 rounded-md font-medium hover:bg-slate-100"
-          >
+          <button onClick={decline} className="btn-secondary flex-1">
             Decline
           </button>
-          <button
-            onClick={accept}
-            className="flex-1 py-2 bg-teal-600 text-white rounded-md font-medium hover:bg-teal-700"
-          >
+          <button onClick={accept} className="btn-primary flex-1">
             Accept
           </button>
         </div>

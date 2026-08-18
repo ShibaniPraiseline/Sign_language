@@ -6,48 +6,38 @@ export default function Dashboard() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-paper">
       <Navbar />
-      <main className="max-w-2xl mx-auto px-6 py-10">
-        <h1 className="text-2xl font-bold text-slate-900 mb-2">
-          Welcome, {user?.name}
-        </h1>
-        <p className="text-slate-600 mb-8">
+      <main className="max-w-2xl mx-auto px-6 py-12">
+        <p className="font-mono text-xs text-ink-soft uppercase tracking-wider mb-2">Dashboard</p>
+        <h1 className="font-display text-3xl mb-2">Welcome, {user?.name}</h1>
+        <p className="text-ink-soft mb-10">
           Pick a contact to start a live translation call, or update your details.
         </p>
 
-        <div className="grid sm:grid-cols-2 gap-4">
-          <Link
-            to="/contacts"
-            className="block bg-white p-6 rounded-lg border border-slate-200 hover:border-teal-400"
-          >
-            <div className="text-2xl mb-2">📇</div>
-            <h2 className="font-semibold text-slate-900">Contacts</h2>
-            <p className="text-sm text-slate-500 mt-1">
-              Add friends and start a call with them.
-            </p>
+        <div className="grid sm:grid-cols-3 gap-4">
+          <Link to="/contacts" className="card p-6 hover:border-cobalt transition-colors">
+            <div className="w-9 h-9 rounded-full bg-cobalt-soft text-cobalt flex items-center justify-center text-sm font-medium mb-3">
+              📇
+            </div>
+            <h2 className="font-display text-lg">Contacts</h2>
+            <p className="text-sm text-ink-soft mt-1">Add friends and start a call.</p>
           </Link>
 
-          <Link
-            to="/profile"
-            className="block bg-white p-6 rounded-lg border border-slate-200 hover:border-teal-400"
-          >
-            <div className="text-2xl mb-2">👤</div>
-            <h2 className="font-semibold text-slate-900">Profile</h2>
-            <p className="text-sm text-slate-500 mt-1">
-              Update your phone number, bio, and preferred sign language.
-            </p>
+          <Link to="/history" className="card p-6 hover:border-amber transition-colors">
+            <div className="w-9 h-9 rounded-full bg-amber-soft text-amber-deep flex items-center justify-center text-sm font-medium mb-3">
+              🕓
+            </div>
+            <h2 className="font-display text-lg">Call History</h2>
+            <p className="text-sm text-ink-soft mt-1">Review past translation calls.</p>
           </Link>
 
-          <Link
-            to="/history"
-            className="block bg-white p-6 rounded-lg border border-slate-200 hover:border-teal-400"
-          >
-            <div className="text-2xl mb-2">🕓</div>
-            <h2 className="font-semibold text-slate-900">Call History</h2>
-            <p className="text-sm text-slate-500 mt-1">
-              See your past translation and video calls.
-            </p>
+          <Link to="/profile" className="card p-6 hover:border-cobalt transition-colors">
+            <div className="w-9 h-9 rounded-full bg-cobalt-soft text-cobalt flex items-center justify-center text-sm font-medium mb-3">
+              👤
+            </div>
+            <h2 className="font-display text-lg">Profile</h2>
+            <p className="text-sm text-ink-soft mt-1">Phone, bio, preferred language.</p>
           </Link>
         </div>
       </main>

@@ -32,49 +32,56 @@ export default function CallHistory() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-paper">
       <Navbar />
-      <main className="max-w-2xl mx-auto px-6 py-10">
-        <h1 className="text-2xl font-bold text-slate-900 mb-6">Call history</h1>
+      <main className="max-w-2xl mx-auto px-6 py-12">
+        <p className="font-mono text-xs text-ink-soft uppercase tracking-wider mb-2">Log</p>
+        <h1 className="font-display text-3xl mb-6">Call history</h1>
 
         {error && (
-          <div className="mb-4 text-sm text-red-600 bg-red-50 px-3 py-2 rounded">{error}</div>
+          <div className="mb-4 text-sm text-bad bg-red-50 px-3 py-2 rounded-md">{error}</div>
         )}
 
         {loading ? (
-          <p className="text-sm text-slate-500">Loading...</p>
+          <p className="text-sm text-ink-soft">Loading...</p>
         ) : sessions.length === 0 ? (
-          <p className="text-sm text-slate-500">
-            No calls yet — go to Contacts and start one.
-          </p>
+          <div className="card p-8 text-center">
+            <p className="text-sm text-ink-soft">No calls yet — go to Contacts and start one.</p>
+          </div>
         ) : (
           <ul className="space-y-2">
             {sessions.map((s) => {
               const wasCaller = s.callerId === user.id;
               return (
-                <li
-                  key={s.id}
-                  className="bg-white px-4 py-3 rounded-md border border-slate-200 flex items-center justify-between"
-                >
-                  <div>
-                    <p className="font-medium text-slate-900">
-                      {wasCaller ? "Outgoing call" : "Incoming call"} — {MODE_LABELS[s.mode] || s.mode}
-                    </p>
-                    <p className="text-xs text-slate-500 mt-0.5">
-                      {s.sourceLang} → {s.targetLang} · {new Date(s.startedAt).toLocaleString()}
-                    </p>
+                <li key={s.id} className="card flex items-center justify-between px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`w-9 h-9 rounded-full flex items-center justify-center text-sm ${
+                        wasCaller ? "bg-cobalt-soft text-cobalt" : "bg-amber-soft text-amber-deep"
+                      }`}
+                    >
+                      {wasCaller ? "↗" : "↙"}
+                    </span>
+                    <div>
+                      <p className="font-medium">
+                        {wasCaller ? "Outgoing" : "Incoming"} · {MODE_LABELS[s.mode] || s.mode}
+                      </p>
+                      <p className="text-xs text-ink-soft font-mono mt-0.5">
+                        {s.sourceLang} → {s.targetLang} · {new Date(s.startedAt).toLocaleString()}
+                      </p>
+                    </div>
                   </div>
                   <div className="text-right">
                     <span
-                      className={`text-xs px-2 py-1 rounded-full ${
+                      className={`text-xs font-mono px-2 py-1 rounded-full ${
                         s.status === "ended"
-                          ? "bg-slate-100 text-slate-600"
-                          : "bg-teal-50 text-teal-700"
+                          ? "bg-line/60 text-ink-soft"
+                          : "bg-green-50 text-good"
                       }`}
                     >
                       {s.status}
                     </span>
-                    <p className="text-xs text-slate-400 mt-1">
+                    <p className="text-xs text-ink-soft font-mono mt-1">
                       {formatDuration(s.startedAt, s.endedAt)}
                     </p>
                   </div>

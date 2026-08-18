@@ -36,61 +36,55 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-paper">
       <Navbar />
-      <main className="max-w-lg mx-auto px-6 py-10">
-        <h1 className="text-2xl font-bold text-slate-900 mb-6">Your profile</h1>
+      <main className="max-w-lg mx-auto px-6 py-12">
+        <p className="font-mono text-xs text-ink-soft uppercase tracking-wider mb-2">Account</p>
+        <h1 className="font-display text-3xl mb-6">Your profile</h1>
 
         {message && (
-          <div className="mb-4 text-sm text-teal-700 bg-teal-50 px-3 py-2 rounded">{message}</div>
+          <div className="mb-4 text-sm text-good bg-green-50 px-3 py-2 rounded-md">{message}</div>
         )}
         {error && (
-          <div className="mb-4 text-sm text-red-600 bg-red-50 px-3 py-2 rounded">{error}</div>
+          <div className="mb-4 text-sm text-bad bg-red-50 px-3 py-2 rounded-md">{error}</div>
         )}
 
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg border border-slate-200 space-y-4">
+        <form onSubmit={handleSubmit} className="card p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
-            <input
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-            />
+            <label className="field-label">Name</label>
+            <input name="name" value={form.name} onChange={handleChange} className="field-input" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Phone number</label>
+            <label className="field-label">Phone number</label>
             <input
               name="phone"
               value={form.phone}
               onChange={handleChange}
               placeholder="+91 9xxxxxxxxx"
-              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="field-input"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Bio</label>
+            <label className="field-label">Bio</label>
             <textarea
               name="bio"
               value={form.bio}
               onChange={handleChange}
               rows={3}
               maxLength={280}
-              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="field-input"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Preferred sign language
-            </label>
+            <label className="field-label">Preferred sign language</label>
             <select
               name="preferredLang"
               value={form.preferredLang}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="field-input"
             >
               <option value="ISL">ISL — Indian Sign Language</option>
               <option value="ASL">ASL — American Sign Language</option>
@@ -98,13 +92,9 @@ export default function Profile() {
             </select>
           </div>
 
-          <div className="pt-2">
-            <p className="text-xs text-slate-400 mb-3">Email: {user?.email}</p>
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-5 py-2 bg-teal-600 text-white rounded-md font-medium hover:bg-teal-700 disabled:opacity-50"
-            >
+          <div className="pt-2 flex items-center justify-between">
+            <p className="text-xs text-ink-soft font-mono">{user?.email}</p>
+            <button type="submit" disabled={saving} className="btn-primary">
               {saving ? "Saving..." : "Save changes"}
             </button>
           </div>

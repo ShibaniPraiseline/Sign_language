@@ -46,39 +46,41 @@ export default function Contacts() {
     navigate(`/translate?peer=${friendId}`);
   }
 
+  function initials(name) {
+    return (name || "?").split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();
+  }
+
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-paper">
       <Navbar />
-      <main className="max-w-2xl mx-auto px-6 py-10 space-y-10">
+      <main className="max-w-2xl mx-auto px-6 py-12 space-y-12">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 mb-4">Find people</h1>
+          <p className="font-mono text-xs text-ink-soft uppercase tracking-wider mb-2">Network</p>
+          <h1 className="font-display text-3xl mb-5">Find people</h1>
           <form onSubmit={handleSearch} className="flex gap-2">
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by name or email"
-              className="flex-1 px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="field-input flex-1"
             />
-            <button className="px-4 py-2 bg-slate-800 text-white rounded-md hover:bg-slate-900">
-              Search
-            </button>
+            <button className="btn-secondary">Search</button>
           </form>
 
           {results.length > 0 && (
             <ul className="mt-4 space-y-2">
               {results.map((u) => (
-                <li
-                  key={u.id}
-                  className="flex items-center justify-between bg-white px-4 py-3 rounded-md border border-slate-200"
-                >
-                  <div>
-                    <p className="font-medium text-slate-900">{u.name}</p>
-                    <p className="text-xs text-slate-500">{u.email}</p>
+                <li key={u.id} className="card flex items-center justify-between px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <span className="w-9 h-9 rounded-full bg-cobalt-soft text-cobalt flex items-center justify-center text-xs font-medium">
+                      {initials(u.name)}
+                    </span>
+                    <div>
+                      <p className="font-medium">{u.name}</p>
+                      <p className="text-xs text-ink-soft">{u.email}</p>
+                    </div>
                   </div>
-                  <button
-                    onClick={() => sendRequest(u.id)}
-                    className="text-sm px-3 py-1.5 bg-teal-600 text-white rounded-md hover:bg-teal-700"
-                  >
+                  <button onClick={() => sendRequest(u.id)} className="btn-primary text-sm py-1.5 px-3">
                     Add
                   </button>
                 </li>
@@ -89,28 +91,24 @@ export default function Contacts() {
 
         {requests.length > 0 && (
           <div>
-            <h2 className="text-lg font-semibold text-slate-900 mb-3">Friend requests</h2>
+            <h2 className="font-display text-xl mb-3">Friend requests</h2>
             <ul className="space-y-2">
               {requests.map((r) => (
-                <li
-                  key={r.id}
-                  className="flex items-center justify-between bg-white px-4 py-3 rounded-md border border-slate-200"
-                >
-                  <div>
-                    <p className="font-medium text-slate-900">{r.from.name}</p>
-                    <p className="text-xs text-slate-500">{r.from.email}</p>
+                <li key={r.id} className="card flex items-center justify-between px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <span className="w-9 h-9 rounded-full bg-amber-soft text-amber-deep flex items-center justify-center text-xs font-medium">
+                      {initials(r.from.name)}
+                    </span>
+                    <div>
+                      <p className="font-medium">{r.from.name}</p>
+                      <p className="text-xs text-ink-soft">{r.from.email}</p>
+                    </div>
                   </div>
                   <div className="flex gap-2">
-                    <button
-                      onClick={() => respond(r.id, true)}
-                      className="text-sm px-3 py-1.5 bg-teal-600 text-white rounded-md hover:bg-teal-700"
-                    >
+                    <button onClick={() => respond(r.id, true)} className="btn-primary text-sm py-1.5 px-3">
                       Accept
                     </button>
-                    <button
-                      onClick={() => respond(r.id, false)}
-                      className="text-sm px-3 py-1.5 border border-slate-300 rounded-md hover:bg-slate-100"
-                    >
+                    <button onClick={() => respond(r.id, false)} className="btn-secondary text-sm py-1.5 px-3">
                       Decline
                     </button>
                   </div>
@@ -121,26 +119,25 @@ export default function Contacts() {
         )}
 
         <div>
-          <h2 className="text-lg font-semibold text-slate-900 mb-3">Your contacts</h2>
+          <h2 className="font-display text-xl mb-3">Your contacts</h2>
           {loading ? (
-            <p className="text-sm text-slate-500">Loading...</p>
+            <p className="text-sm text-ink-soft">Loading...</p>
           ) : friends.length === 0 ? (
-            <p className="text-sm text-slate-500">No contacts yet — search above to add friends.</p>
+            <p className="text-sm text-ink-soft">No contacts yet — search above to add friends.</p>
           ) : (
             <ul className="space-y-2">
               {friends.map((f) => (
-                <li
-                  key={f.id}
-                  className="flex items-center justify-between bg-white px-4 py-3 rounded-md border border-slate-200"
-                >
-                  <div>
-                    <p className="font-medium text-slate-900">{f.name}</p>
-                    <p className="text-xs text-slate-500">{f.email}</p>
+                <li key={f.id} className="card flex items-center justify-between px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <span className="w-9 h-9 rounded-full bg-cobalt-soft text-cobalt flex items-center justify-center text-xs font-medium">
+                      {initials(f.name)}
+                    </span>
+                    <div>
+                      <p className="font-medium">{f.name}</p>
+                      <p className="text-xs text-ink-soft">{f.email}</p>
+                    </div>
                   </div>
-                  <button
-                    onClick={() => startCall(f.id)}
-                    className="text-sm px-3 py-1.5 bg-slate-800 text-white rounded-md hover:bg-slate-900"
-                  >
+                  <button onClick={() => startCall(f.id)} className="btn-primary text-sm py-1.5 px-3">
                     Call
                   </button>
                 </li>
