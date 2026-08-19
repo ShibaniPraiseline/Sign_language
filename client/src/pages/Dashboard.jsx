@@ -10,34 +10,54 @@ export default function Dashboard() {
       <Navbar />
       <main className="max-w-2xl mx-auto px-6 py-12">
         <p className="font-mono text-xs text-ink-soft uppercase tracking-wider mb-2">Dashboard</p>
-        <h1 className="font-display text-3xl mb-2">Welcome, {user?.name}</h1>
-        <p className="text-ink-soft mb-10">
-          Pick a contact to start a live translation call, or update your details.
-        </p>
+        <h1 className="font-display text-3xl mb-10">Welcome, {user?.name}</h1>
 
-        <div className="grid sm:grid-cols-3 gap-4">
-          <Link to="/contacts" className="card p-6 hover:border-cobalt transition-colors">
-            <div className="w-9 h-9 rounded-full bg-cobalt-soft text-cobalt flex items-center justify-center text-sm font-medium mb-3">
-              📇
+        {/* Primary: the two things this app actually does */}
+        <div className="grid sm:grid-cols-2 gap-4 mb-10">
+          <Link
+            to="/live-translation"
+            className="card p-7 hover:border-cobalt transition-colors"
+          >
+            <div className="w-11 h-11 rounded-full bg-cobalt-soft text-cobalt flex items-center justify-center text-lg mb-4">
+              🤟
             </div>
-            <h2 className="font-display text-lg">Contacts</h2>
-            <p className="text-sm text-ink-soft mt-1">Add friends and start a call.</p>
+            <h2 className="font-display text-xl mb-1">Live Translation</h2>
+            <p className="text-sm text-ink-soft leading-relaxed">
+              Translate on your own — sign to sign, sign to voice, or voice to
+              sign, right from your camera or mic.
+            </p>
           </Link>
 
-          <Link to="/history" className="card p-6 hover:border-amber transition-colors">
-            <div className="w-9 h-9 rounded-full bg-amber-soft text-amber-deep flex items-center justify-center text-sm font-medium mb-3">
-              🕓
+          <Link
+            to="/contacts"
+            className="card p-7 hover:border-amber transition-colors"
+          >
+            <div className="w-11 h-11 rounded-full bg-amber-soft text-amber-deep flex items-center justify-center text-lg mb-4">
+              📹
             </div>
-            <h2 className="font-display text-lg">Call History</h2>
-            <p className="text-sm text-ink-soft mt-1">Review past translation calls.</p>
+            <h2 className="font-display text-xl mb-1">Video Call</h2>
+            <p className="text-sm text-ink-soft leading-relaxed">
+              Call a contact with live translation running throughout the
+              conversation.
+            </p>
           </Link>
+        </div>
 
-          <Link to="/profile" className="card p-6 hover:border-cobalt transition-colors">
-            <div className="w-9 h-9 rounded-full bg-cobalt-soft text-cobalt flex items-center justify-center text-sm font-medium mb-3">
-              👤
+        {/* Secondary */}
+        <div className="grid sm:grid-cols-2 gap-3">
+          <Link to="/history" className="card p-4 flex items-center gap-3 hover:border-line">
+            <span className="text-lg">🕓</span>
+            <div>
+              <h3 className="font-medium text-sm">Call History</h3>
+              <p className="text-xs text-ink-soft">Review past calls</p>
             </div>
-            <h2 className="font-display text-lg">Profile</h2>
-            <p className="text-sm text-ink-soft mt-1">Phone, bio, preferred language.</p>
+          </Link>
+          <Link to="/profile" className="card p-4 flex items-center gap-3 hover:border-line">
+            <span className="text-lg">👤</span>
+            <div>
+              <h3 className="font-medium text-sm">Profile</h3>
+              <p className="text-xs text-ink-soft">Details & preferences</p>
+            </div>
           </Link>
         </div>
       </main>

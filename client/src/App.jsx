@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Contacts from "./pages/Contacts";
 import Translate from "./pages/Translate";
+import LiveTranslation from "./pages/LiveTranslation";
 import CallHistory from "./pages/CallHistory";
 
 export default function App() {
@@ -53,6 +54,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Translate />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/live-translation"
+            element={
+              <ProtectedRoute>
+                <LiveTranslation />
               </ProtectedRoute>
             }
           />

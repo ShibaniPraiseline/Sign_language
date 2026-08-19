@@ -26,6 +26,8 @@ export default function Translate() {
   const [inCall, setInCall] = useState(false);
   const [status, setStatus] = useState("Not connected");
   const [translatedText, setTranslatedText] = useState("");
+  const [transcript, setTranscript] = useState([]); // persistent running transcript
+  const [captionSize, setCaptionSize] = useState("md"); // sm | md | lg
   const [error, setError] = useState("");
   const [micOn, setMicOn] = useState(true);
   const [cameraOn, setCameraOn] = useState(true);
@@ -71,7 +73,17 @@ export default function Translate() {
   }
 
   async function setupMediaAndPeerConnection(roomId) {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    setTranscript([]);
+    setTranslatedText("");
+
+    // Sign language depends on clear, smooth video far more than most video
+    // calls — a blurry frame or dropped motion can make a handshape
+    // unreadable. Request a higher resolution/framerate than the browser
+    // default so there's headroom before quality becomes a problem.
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30, min: 24 } },
+      audio: true,
+    });
     localStreamRef.current = stream;
     if (localVideoRef.current) localVideoRef.current.srcObject = stream;
     setMicOn(true);
@@ -80,6 +92,23 @@ export default function Translate() {
     const pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
     pcRef.current = pc;
     stream.getTracks().forEach((track) => pc.addTrack(track, stream));
+
+    // Under poor network conditions, WebRTC by default protects audio and
+    // lets video degrade — the wrong tradeoff here, since the video *is*
+    // the conversation. Tell the encoder to keep motion smooth (signs are
+    // fast) and give video a healthy bitrate ceiling.
+    const videoSender = pc.getSenders().find((s) => s.track && s.track.kind === "video");
+    if (videoSender) {
+      try {
+        const params = videoSender.getParameters();
+        if (!params.encodings || params.encodings.length === 0) params.encodings = [{}];
+        params.encodings[0].maxBitrate = 1_500_000; // 1.5 Mbps
+        params.degradationPreference = "maintain-framerate";
+        await videoSender.setParameters(params);
+      } catch (err) {
+        console.warn("Could not set video quality preferences", err);
+      }
+    }
 
     pc.ontrack = (event) => {
       if (remoteVideoRef.current) remoteVideoRef.current.srcObject = event.streams[0];
@@ -123,6 +152,7 @@ export default function Translate() {
 
   function handleTranslation({ text }) {
     setTranslatedText(text);
+    setTranscript((prev) => [...prev, { text, time: new Date() }]);
   }
 
   function handleDeclined() {
@@ -385,16 +415,49 @@ export default function Translate() {
         </div>
 
         <div className="mt-6 card p-5">
-          <h2 className="font-mono text-xs uppercase tracking-wider text-ink-soft mb-2">
-            Translation output
-          </h2>
-          <p className="text-ink text-lg min-h-[2rem]">
-            {translatedText || (
-              <span className="text-ink-soft italic">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-mono text-xs uppercase tracking-wider text-ink-soft">
+              Live transcript
+            </h2>
+            <div className="flex items-center gap-1">
+              <span className="text-xs text-ink-soft mr-1">Text size</span>
+              {["sm", "md", "lg"].map((size) => (
+                <button
+                  key={size}
+                  onClick={() => setCaptionSize(size)}
+                  className={`w-7 h-7 rounded-md text-xs font-medium border transition-colors ${
+                    captionSize === size
+                      ? "bg-cobalt text-white border-cobalt"
+                      : "border-line text-ink-soft hover:bg-cobalt-soft"
+                  }`}
+                >
+                  A
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="max-h-64 overflow-y-auto space-y-2 pr-1">
+            {transcript.length === 0 ? (
+              <p className="text-ink-soft italic">
                 Recognized text will appear here once the gesture-recognition model is connected.
-              </span>
+              </p>
+            ) : (
+              transcript.map((entry, i) => (
+                <p
+                  key={i}
+                  className={`text-ink ${
+                    captionSize === "sm" ? "text-base" : captionSize === "lg" ? "text-2xl" : "text-lg"
+                  }`}
+                >
+                  <span className="font-mono text-xs text-ink-soft mr-2">
+                    {entry.time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+                  </span>
+                  {entry.text}
+                </p>
+              ))
             )}
-          </p>
+          </div>
         </div>
       </main>
     </div>
